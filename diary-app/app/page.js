@@ -1,9 +1,10 @@
-"use client";
+// app/page.js
+"use client"; // Add this directive at the top
 
-import { useEffect, useState } from "react";
-import DiaryForm from "./components/DiaryForm";
-import DiaryList from "./components/DiaryList";
-import Sidebar from "./components/sidebar";
+import { useEffect, useState } from 'react';
+import DiaryForm from './components/DiaryForm';
+import DiaryList from './components/DiaryList';
+import Sidebar from './components/Sidebar';
 
 const Home = () => {
   const [entries, setEntries] = useState([]);

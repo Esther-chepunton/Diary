@@ -1,15 +1,13 @@
-"use client";
-
 const Sidebar = () => {
   return (
     <div className="sidebar">
       <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-          <li class="sidebar-brand">
-            <a href="#">All About Me!</a>
+        <ul className="sidebar-nav">
+          <li className="sidebar-brand">
+            <a href="/">All About Me!</a>
           </li>
           <li>
-            <a href="#">Profile</a>
+            <a href="/profile">Profile</a>
           </li>
           <li>
             <a href="#">Events</a>
@@ -17,7 +15,6 @@ const Sidebar = () => {
           <li>
             <a href="#">Settings</a>
           </li>
-          
         </ul>
       </div>
     </div>
