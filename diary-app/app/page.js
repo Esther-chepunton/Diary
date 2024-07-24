@@ -1,5 +1,4 @@
-// app/page.js
-"use client"; // Add this directive at the top
+"use client"; 
 
 import { useEffect, useState } from 'react';
 import DiaryForm from './components/DiaryForm';

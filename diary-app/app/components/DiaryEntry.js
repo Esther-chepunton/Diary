@@ -10,6 +10,9 @@ const DiaryEntry = ({ entry, onEdit, onDelete }) => {
         <div className="card-body">
           <h5 className="card-title">{entry.date}</h5>
           <p className="card-text">{entry.content}</p>
+          <p className="card-text">
+            <strong>Mood:</strong> {entry.mood}
+          </p>
           <button
             className="btn btn-warning me-2"
             style={{
