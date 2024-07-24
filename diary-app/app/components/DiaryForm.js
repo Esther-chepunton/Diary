@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const DiaryForm = ({ entry, onSave }) => {
   const [date, setDate] = useState("");
@@ -21,7 +21,10 @@ const DiaryForm = ({ entry, onSave }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-3">
+    <form
+      onSubmit={handleSubmit}
+      className="mb-3 shadow p-3 mb-5 bg-body-tertiary rounded"
+    >
       <div className="form-group">
         <label htmlFor="date">Date</label>
         <input
@@ -34,7 +37,7 @@ const DiaryForm = ({ entry, onSave }) => {
         />
       </div>
       <div className="form-group mt-3">
-        <label htmlFor="content">Content</label>
+        <label htmlFor="content">My day!</label>
         <textarea
           className="form-control"
           id="content"

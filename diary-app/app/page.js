@@ -1,15 +1,15 @@
-"use client"; // Add this line to make this file a client component
+"use client";
 
 import { useEffect, useState } from "react";
 import DiaryForm from "./components/DiaryForm";
 import DiaryList from "./components/DiaryList";
+import Sidebar from "./components/sidebar";
 
 const Home = () => {
   const [entries, setEntries] = useState([]);
   const [editingEntry, setEditingEntry] = useState(null);
 
   useEffect(() => {
-    // Fetch entries from the JSON file (simulated as this would be done server-side)
     fetch("/api/entries")
       .then((response) => response.json())
       .then((data) => setEntries(data));
@@ -20,7 +20,6 @@ const Home = () => {
       ? entries.map((e) => (e.id === entry.id ? entry : e))
       : [...entries, entry];
 
-    // Update entries in the JSON file (simulated as this would be done server-side)
     fetch("/api/entries", {
       method: "POST",
       headers: {
@@ -41,7 +40,6 @@ const Home = () => {
   const handleDeleteEntry = (id) => {
     const updatedEntries = entries.filter((e) => e.id !== id);
 
-    // Update entries in the JSON file (simulated as this would be done server-side)
     fetch("/api/entries", {
       method: "DELETE",
       headers: {
@@ -52,8 +50,9 @@ const Home = () => {
   };
 
   return (
-    <div className="container">
-      <h1 className="my-4">Diary App</h1>
+    <div className="container mt-4">
+      <Sidebar />
+      <h1 className="mb-4">Diary App</h1>
       <DiaryForm entry={editingEntry} onSave={handleSaveEntry} />
       <DiaryList
         entries={entries}
