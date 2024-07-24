@@ -13,7 +13,7 @@ const Sidebar = () => {
             <a href="#">Events</a>
           </li>
           <li>
-            <a href="#">Settings</a>
+            <a href="/DiaryList">Settings</a>
           </li>
         </ul>
       </div>

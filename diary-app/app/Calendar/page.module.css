@@ -1,0 +1,27 @@
+.calendar-page {
+    padding: 20px;
+  }
+  
+  .event {
+    background: #ffeb3b;
+    padding: 5px;
+    margin: 2px 0;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  
+  .react-calendar {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .Modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .Modal input {
+    margin-bottom: 10px;
+  }
+  
