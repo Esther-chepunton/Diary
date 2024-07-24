@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const DiaryForm = ({ entry, onSave }) => {
   const [date, setDate] = useState("");
   const [content, setContent] = useState("");
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     if (entry) {
@@ -12,6 +13,21 @@ const DiaryForm = ({ entry, onSave }) => {
       setContent(entry.content);
     }
   }, [entry]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [content]);
+
+  const handleContentChange = (e) => {
+    setContent(e.target.value);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,11 +55,12 @@ const DiaryForm = ({ entry, onSave }) => {
       <div className="form-group mt-3">
         <label htmlFor="content">My day!</label>
         <textarea
-          className="form-control"
+          className="form-control textarea-book"
           id="content"
           rows="3"
+          ref={textareaRef}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={handleContentChange}
           required
         ></textarea>
       </div>

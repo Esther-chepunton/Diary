@@ -51,14 +51,24 @@ const Home = () => {
 
   return (
     <div className="container mt-4">
-      <Sidebar />
-      <h1 className="mb-4">Diary App</h1>
-      <DiaryForm entry={editingEntry} onSave={handleSaveEntry} />
-      <DiaryList
-        entries={entries}
-        onEdit={handleEditEntry}
-        onDelete={handleDeleteEntry}
-      />
+      <div className="row">
+        <div className="col-md-3">
+          <Sidebar />
+        </div>
+        <div className="col-md-9 d-flex flex-column align-items-center">
+          <div className="sticky-form">
+            <h1 className="mb-4">Diary App</h1>
+            <DiaryForm entry={editingEntry} onSave={handleSaveEntry} />
+          </div>
+          <div className="entries-list mt-4 w-100">
+            <DiaryList
+              entries={entries}
+              onEdit={handleEditEntry}
+              onDelete={handleDeleteEntry}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
