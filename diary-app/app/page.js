@@ -1,10 +1,9 @@
-"use client";
+"use client"; 
 
-import { useEffect, useState } from "react";
-import DiaryForm from "./components/DiaryForm";
-import DiaryList from "./components/DiaryList";
-import Sidebar from "./components/Sidebar";
-import ToDoList from "./components/ToDoList";
+import { useEffect, useState } from 'react';
+import DiaryForm from './components/DiaryForm';
+import DiaryList from './components/DiaryList';
+import Sidebar from './components/Sidebar';
 
 const Home = () => {
   const [entries, setEntries] = useState([]);
@@ -17,27 +16,20 @@ const Home = () => {
   }, []);
 
   const handleSaveEntry = (entry) => {
-    const method = editingEntry ? "PUT" : "POST";
-    const url = editingEntry ? `/api/entries/${entry.id}` : "/api/entries";
+    const updatedEntries = editingEntry
+      ? entries.map((e) => (e.id === entry.id ? entry : e))
+      : [...entries, entry];
 
-    fetch(url, {
-      method,
+    fetch("/api/entries", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(entry),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (editingEntry) {
-          // Update the entry in the list
-          setEntries(entries.map((e) => (e.id === entry.id ? data : e)));
-        } else {
-          // Add the new entry to the list
-          setEntries([...entries, data]);
-        }
-        setEditingEntry(null); // Clear the editing state
-      });
+      body: JSON.stringify(updatedEntries),
+    }).then(() => {
+      setEntries(updatedEntries);
+      setEditingEntry(null);
+    });
   };
 
   const handleEditEntry = (id) => {
@@ -46,14 +38,15 @@ const Home = () => {
   };
 
   const handleDeleteEntry = (id) => {
-    fetch(`/api/entries/${id}`, {
+    const updatedEntries = entries.filter((e) => e.id !== id);
+
+    fetch("/api/entries", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-    }).then(() => {
-      setEntries(entries.filter((e) => e.id !== id));
-    });
+      body: JSON.stringify(updatedEntries),
+    }).then(() => setEntries(updatedEntries));
   };
 
   return (
@@ -65,7 +58,6 @@ const Home = () => {
         <div className="col-md-9 d-flex flex-column align-items-center">
           <div className="sticky-form">
             <h1 className="mb-4">Diary App</h1>
-            <ToDoList />
             <DiaryForm entry={editingEntry} onSave={handleSaveEntry} />
           </div>
           <div className="entries-list mt-4 w-100">

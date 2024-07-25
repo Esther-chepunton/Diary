@@ -174,3 +174,41 @@ body {
   resize: none;
   /* Prevent manual resizing */
 }
+/* styles/globals.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.card-title {
+  color: #4a4a4a;
+}
+
+.form-control, .textarea-book {
+  border-radius: 10px;
+}
+
+textarea.textarea-book {
+  resize: none;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.slide-in {
+  animation: slide-in 0.5s ease-in-out;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
