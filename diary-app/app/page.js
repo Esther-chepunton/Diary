@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import DiaryForm from "./components/DiaryForm";
 import DiaryList from "./components/DiaryList";
 import Sidebar from "./components/Sidebar";
@@ -13,31 +13,27 @@ const Home = () => {
   useEffect(() => {
     fetch("/api/entries")
       .then((response) => response.json())
-      .then((data) => setEntries(data));
+      .then((data) => setEntries(data))
+      .catch((error) => console.error("Error fetching entries:", error));
   }, []);
 
   const handleSaveEntry = (entry) => {
-    const method = editingEntry ? "PUT" : "POST";
-    const url = editingEntry ? `/api/entries/${entry.id}` : "/api/entries";
+    const updatedEntries = editingEntry
+      ? entries.map((e) => (e.id === entry.id ? entry : e))
+      : [...entries, entry];
 
-    fetch(url, {
-      method,
+    fetch("/api/entries", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(entry),
+      body: JSON.stringify(updatedEntries),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (editingEntry) {
-          // Update the entry in the list
-          setEntries(entries.map((e) => (e.id === entry.id ? data : e)));
-        } else {
-          // Add the new entry to the list
-          setEntries([...entries, data]);
-        }
-        setEditingEntry(null); // Clear the editing state
-      });
+      .then(() => {
+        setEntries(updatedEntries);
+        setEditingEntry(null);
+      })
+      .catch((error) => console.error("Error saving entry:", error));
   };
 
   const handleEditEntry = (id) => {
@@ -46,14 +42,15 @@ const Home = () => {
   };
 
   const handleDeleteEntry = (id) => {
-    fetch(`/api/entries/${id}`, {
+    const updatedEntries = entries.filter((e) => e.id !== id);
+
+    fetch("/api/entries", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-    }).then(() => {
-      setEntries(entries.filter((e) => e.id !== id));
-    });
+      body: JSON.stringify(updatedEntries),
+    }).then(() => setEntries(updatedEntries));
   };
 
   return (

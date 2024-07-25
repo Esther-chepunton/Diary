@@ -1,50 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const DiaryForm = ({ entry, onSave }) => {
   const [date, setDate] = useState("");
   const [content, setContent] = useState("");
-  const [mood, setMood] = useState("happy"); // Default mood
+  const [mood, setMood] = useState("happy");
   const textareaRef = useRef(null);
 
   useEffect(() => {
     if (entry) {
       setDate(entry.date || "");
       setContent(entry.content || "");
-      setMood(entry.mood || "happy"); // Default to "happy" if mood is not provided
+      setMood(entry.mood || "happy");
     }
   }, [entry]);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [content]);
-
-  const handleContentChange = (e) => {
-    setContent(e.target.value);
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  };
-
-  const handleMoodChange = (e) => {
-    setMood(e.target.value);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (onSave) {
       onSave({ id: entry?.id || Date.now(), date, content, mood });
-      setDate("");
-      setContent("");
-      setMood("happy"); // Reset mood after saving
     } else {
-      console.error("onSave is not defined");
+      console.error("onSave function is not defined");
     }
+    setDate("");
+    setContent("");
+    setMood("happy");
   };
 
   return (
@@ -69,7 +50,7 @@ const DiaryForm = ({ entry, onSave }) => {
           className="form-control"
           id="mood"
           value={mood}
-          onChange={handleMoodChange}
+          onChange={(e) => setMood(e.target.value)}
           required
         >
           <option value="happy">Happy</option>
@@ -87,7 +68,7 @@ const DiaryForm = ({ entry, onSave }) => {
           rows="3"
           ref={textareaRef}
           value={content}
-          onChange={handleContentChange}
+          onChange={(e) => setContent(e.target.value)}
           required
         ></textarea>
       </div>
