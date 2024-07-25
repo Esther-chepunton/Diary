@@ -6,7 +6,6 @@ const ToDoList = () => {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
-  const [newCompletedTask, setNewCompletedTask] = useState("");
 
   const handleAddTask = () => {
     if (newTask.trim() !== "") {
@@ -15,21 +14,18 @@ const ToDoList = () => {
     }
   };
 
-  const handleAddCompletedTask = () => {
-    if (newCompletedTask.trim() !== "") {
-      setCompletedTasks([...completedTasks, newCompletedTask]);
-      setNewCompletedTask(""); // Clear the input field
-    }
+  const handleCompleteTask = (index) => {
+    const taskToComplete = tasks[index];
+    setCompletedTasks([...completedTasks, taskToComplete]);
+    setTasks(tasks.filter((_, i) => i !== index));
   };
 
   const handleRemoveTask = (index) => {
-    const updatedTasks = tasks.filter((_, i) => i !== index);
-    setTasks(updatedTasks);
+    setTasks(tasks.filter((_, i) => i !== index));
   };
 
   const handleRemoveCompletedTask = (index) => {
-    const updatedCompletedTasks = completedTasks.filter((_, i) => i !== index);
-    setCompletedTasks(updatedCompletedTasks);
+    setCompletedTasks(completedTasks.filter((_, i) => i !== index));
   };
 
   return (
@@ -56,7 +52,7 @@ const ToDoList = () => {
                 }}
                 onClick={handleAddTask}
               >
-                 Today's Tasks
+                Add Task
               </button>
             </div>
             {tasks.length === 0 ? (
@@ -69,17 +65,30 @@ const ToDoList = () => {
                     className="list-group-item d-flex justify-content-between align-items-center"
                   >
                     {task}
-                    <button
-                      className="btn btn-danger btn-sm"
-                      style={{
-                        backgroundColor: "#dfc5fe",
-                        border: "none",
-                        color: "black",
-                      }}
-                      onClick={() => handleRemoveTask(index)}
-                    >
-                      Remove
-                    </button>
+                    <div>
+                      <button
+                        className="btn btn-success btn-sm me-2"
+                        style={{
+                          backgroundColor: "#4caf50",
+                          border: "none",
+                          color: "white",
+                        }}
+                        onClick={() => handleCompleteTask(index)}
+                      >
+                        Complete
+                      </button>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        style={{
+                          backgroundColor: "#dfc5fe",
+                          border: "none",
+                          color: "black",
+                        }}
+                        onClick={() => handleRemoveTask(index)}
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -93,26 +102,6 @@ const ToDoList = () => {
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">Tasks Completed</h5>
-            <div className="mb-3">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Add a completed task"
-                value={newCompletedTask}
-                onChange={(e) => setNewCompletedTask(e.target.value)}
-              />
-              <button
-                className="btn btn-primary mt-2"
-                style={{
-                  backgroundColor: "#dfc5fe",
-                  border: "none",
-                  color: "black",
-                }}
-                onClick={handleAddCompletedTask}
-              >
-                Completed
-              </button>
-            </div>
             {completedTasks.length === 0 ? (
               <p>No completed tasks available.</p>
             ) : (
