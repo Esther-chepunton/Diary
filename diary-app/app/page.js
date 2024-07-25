@@ -1,51 +1,73 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import DiaryForm from "./components/DiaryForm";
-import DiaryList from "./components/DiaryList";
-import Sidebar from "./components/sidebar";
+import { useEffect, useState } from 'react';
+import DiaryForm from './components/DiaryForm';
+import DiaryList from './components/DiaryList';
+import Sidebar from './components/Sidebar';
+import { useRouter } from 'next/navigation';
+import cookies from 'js-cookie';
 
 const Home = () => {
   const [entries, setEntries] = useState([]);
   const [editingEntry, setEditingEntry] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/entries")
-      .then((response) => response.json())
-      .then((data) => setEntries(data));
+    const token = cookies.get('token');
+    if (!token) {
+      router.push('/login'); // Redirect to login page if not logged in
+    } else {
+      fetch('/api/entries', {
+        headers: {
+          'Authorization': `Basic ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message === 'Unauthorized') {
+          router.push('/login');
+        } else {
+          setEntries(data);
+        }
+      });
+    }
   }, []);
 
-  const handleSaveEntry = (entry) => {
+  const handleSaveEntry = entry => {
+    const token = cookies.get('token');
     const updatedEntries = editingEntry
-      ? entries.map((e) => (e.id === entry.id ? entry : e))
+      ? entries.map(e => (e.id === entry.id ? entry : e))
       : [...entries, entry];
 
-    fetch("/api/entries", {
-      method: "POST",
+    fetch('/api/entries', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Authorization': `Basic ${token}`,
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedEntries),
+      body: JSON.stringify(entry),
     }).then(() => {
       setEntries(updatedEntries);
       setEditingEntry(null);
     });
   };
 
-  const handleEditEntry = (id) => {
-    const entry = entries.find((e) => e.id === id);
+  const handleEditEntry = id => {
+    const entry = entries.find(e => e.id === id);
     setEditingEntry(entry);
   };
 
-  const handleDeleteEntry = (id) => {
-    const updatedEntries = entries.filter((e) => e.id !== id);
+  const handleDeleteEntry = id => {
+    const token = cookies.get('token');
+    const updatedEntries = entries.filter(e => e.id !== id);
 
-    fetch("/api/entries", {
-      method: "DELETE",
+    fetch(`/api/entries?id=${id}`, {
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Authorization': `Basic ${token}`,
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedEntries),
     }).then(() => setEntries(updatedEntries));
   };
 
