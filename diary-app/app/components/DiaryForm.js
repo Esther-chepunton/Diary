@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const DiaryForm = ({ entry, onSave }) => {
   const [date, setDate] = useState("");
   const [content, setContent] = useState("");
+  const [mood, setMood] = useState("happy"); // Default mood
   const textareaRef = useRef(null);
 
   useEffect(() => {
     if (entry) {
-      setDate(entry.date);
-      setContent(entry.content);
+      setDate(entry.date || "");
+      setContent(entry.content || "");
+      setMood(entry.mood || "happy"); // Default to "happy" if mood is not provided
     }
   }, [entry]);
 
@@ -29,11 +31,20 @@ const DiaryForm = ({ entry, onSave }) => {
     }
   };
 
+  const handleMoodChange = (e) => {
+    setMood(e.target.value);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ id: entry?.id || Date.now(), date, content });
-    setDate("");
-    setContent("");
+    if (onSave) {
+      onSave({ id: entry?.id || Date.now(), date, content, mood });
+      setDate("");
+      setContent("");
+      setMood("happy"); // Reset mood after saving
+    } else {
+      console.error("onSave is not defined");
+    }
   };
 
   return (
@@ -51,6 +62,22 @@ const DiaryForm = ({ entry, onSave }) => {
           onChange={(e) => setDate(e.target.value)}
           required
         />
+      </div>
+      <div className="form-group mt-3">
+        <label htmlFor="mood">Mood</label>
+        <select
+          className="form-control"
+          id="mood"
+          value={mood}
+          onChange={handleMoodChange}
+          required
+        >
+          <option value="happy">Happy</option>
+          <option value="sad">Sad</option>
+          <option value="angry">Angry</option>
+          <option value="excited">Excited</option>
+          <option value="neutral">Neutral</option>
+        </select>
       </div>
       <div className="form-group mt-3">
         <label htmlFor="content">My day!</label>

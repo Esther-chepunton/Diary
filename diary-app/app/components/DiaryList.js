@@ -1,14 +1,17 @@
 "use client";
 
-import DiaryEntry from "./DiaryEntry";
+import DiaryEntry from "./DiaryEntry"; // Adjust the path as necessary
 
 const DiaryList = ({ entries, onEdit, onDelete }) => {
+  // Ensure entries is always an array
+  const safeEntries = Array.isArray(entries) ? entries : [];
+
   return (
     <div>
-      {entries.length === 0 ? (
+      {safeEntries.length === 0 ? (
         <p>No entries yet. Add your first diary entry!</p>
       ) : (
-        entries.map((entry) => (
+        safeEntries.map((entry) => (
           <DiaryEntry
             key={entry.id}
             entry={entry}

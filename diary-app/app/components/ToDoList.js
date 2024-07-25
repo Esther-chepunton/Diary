@@ -56,7 +56,7 @@ const ToDoList = () => {
                 }}
                 onClick={handleAddTask}
               >
-                Add Task to Today's Tasks
+                 Today's Tasks
               </button>
             </div>
             {tasks.length === 0 ? (
@@ -110,7 +110,7 @@ const ToDoList = () => {
                 }}
                 onClick={handleAddCompletedTask}
               >
-                Add Task to Completed
+                Completed
               </button>
             </div>
             {completedTasks.length === 0 ? (
