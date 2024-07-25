@@ -2,39 +2,27 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Form, Input, Button, Space, notification, Typography } from 'antd';
+import { Form, Input, Button, Space, notification, Typography, Alert } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
 import Image from 'next/image';
-import styles from '../styles/page.module.css';
+import cookies from 'js-cookie';
+import styles from '../page.module.css';
 
-const SignupPage = () => {
+const SignupPage = ({ onSignupSuccess }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [alert, setAlert] = useState(null);
   const router = useRouter();
 
   const handleSignup = async () => {
     if (password !== confirmPassword) {
-      notification.error({
-        message: 'Error',
-        description: 'Passwords do not match!',
-      });
+      setAlert(<Alert message="Error" description="Passwords do not match!" type="error" showIcon />);
       return;
     }
 
     try {
-      const existingUserResponse = await fetch(`/api/check-email?email=${email}`);
-      const existingUserData = await existingUserResponse.json();
-
-      if (existingUserData.exists) {
-        notification.error({
-          message: 'Error',
-          description: 'Email already exists. Please choose a new email.',
-        });
-        return;
-      }
-
       const response = await fetch('/api/signup', {
         method: 'POST',
         headers: {
@@ -45,29 +33,29 @@ const SignupPage = () => {
 
       const data = await response.json();
       if (response.ok) {
-        notification.success({
-          message: 'Success',
-          description: 'Signup successful! Redirecting to login page...',
-        });
-        router.push('/login'); // Redirect to the login page
+        cookies.set('token', data.token, { expires: 1 });
+        setAlert(<Alert message="Success" description="Signup successful! Redirecting to login page..." type="success" showIcon />);
+        setTimeout(() => {
+          onSignupSuccess();
+          router.push('/login'); // Redirect to the login page
+        }, 2000);
       } else {
-        notification.error({
-          message: 'Error',
-          description: data.message,
-        });
+        setAlert(<Alert message="Error" description={data.message} type="error" showIcon />);
       }
     } catch (error) {
-      notification.error({
-        message: 'Error',
-        description: 'An unexpected error occurred. Please try again.',
-      });
+      setAlert(<Alert message="Error" description="An unexpected error occurred. Please try again." type="error" showIcon />);
     }
+  };
+
+  const handleLoginRedirect = () => {
+    router.push('/LoginPage'); // Redirect to the login page
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.formContainer}>
         <h1 className={styles.title}>Signup</h1>
+        {alert}
         <Form onFinish={handleSignup}>
           <Space direction="vertical" style={{ width: '100%' }}>
             <Form.Item label={<Typography.Text style={{ color: 'white' }}>Username</Typography.Text>} required>
@@ -81,6 +69,7 @@ const SignupPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Input password"
+                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
               />
             </Form.Item>
             <Form.Item label={<Typography.Text style={{ color: 'white' }}>Confirm Password</Typography.Text>} required>
@@ -98,6 +87,12 @@ const SignupPage = () => {
             </Form.Item>
           </Space>
         </Form>
+        <div className={styles.signupContainer}>
+          <Typography.Text>Already have an account?</Typography.Text>
+          <Button type="link" onClick={handleLoginRedirect}>
+            Login
+          </Button>
+        </div>
       </div>
       <div className={styles.imageContainer}>
         <Image
@@ -108,6 +103,7 @@ const SignupPage = () => {
           height={270}
           priority
         />
+        <Typography.Text className={styles.welcomeText}>Welcome to your journal, start writing!</Typography.Text>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Form, Input, Button, Space, Typography, Alert } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
 import Image from 'next/image';
-import styles from '../styles/page.module.css';
+import styles from '../page.module.css';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -27,7 +27,7 @@ const LoginPage = () => {
       if (response.ok) {
         setAlert(<Alert message="Success" description="Login successful! Redirecting..." type="success" showIcon />);
         setTimeout(() => {
-          router.push('/'); // Redirect to the home page
+          router.push('/entries'); // Redirect to the entries page
         }, 2000);
       } else {
         setAlert(<Alert message="Error" description={data.message} type="error" showIcon />);
@@ -37,6 +37,10 @@ const LoginPage = () => {
     }
   };
 
+  const handleSignupRedirect = () => {
+    router.push('/SignupPage'); // Redirect to the signup page
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.formContainer}>
@@ -44,10 +48,10 @@ const LoginPage = () => {
         {alert}
         <Form onFinish={handleLogin}>
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Form.Item label={<Typography.Text style={{ color: 'white' }}>Username</Typography.Text>} required>
+            <Form.Item label={<Typography.Text>Username</Typography.Text>} required>
               <Input value={username} onChange={(e) => setUsername(e.target.value)} placeholder='username' />
             </Form.Item>
-            <Form.Item label={<Typography.Text style={{ color: 'white' }}>Password</Typography.Text>} required>
+            <Form.Item label={<Typography.Text>Password</Typography.Text>} required>
               <Input.Password
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -62,6 +66,12 @@ const LoginPage = () => {
             </Form.Item>
           </Space>
         </Form>
+        <div className={styles.signupContainer}>
+          <Typography.Text>Don't have an account?</Typography.Text>
+          <Button type="link" onClick={handleSignupRedirect}>
+            Sign up
+          </Button>
+        </div>
       </div>
       <div className={styles.imageContainer}>
         <Image
@@ -72,6 +82,7 @@ const LoginPage = () => {
           height={270}
           priority
         />
+        <Typography.Text className={styles.welcomeText}>Welcome to your journal, start writing!</Typography.Text>
       </div>
     </div>
   );

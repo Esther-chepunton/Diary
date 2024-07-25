@@ -1,25 +1,33 @@
-import { NextResponse } from 'next/server';
-import { getUsers } from '../../data';
+import fs from 'fs';
+import path from 'path';
 import bcrypt from 'bcryptjs';
 import { serialize } from 'cookie';
+import { NextResponse } from 'next/server';
 
-export async function POST(request) {
-  const { username, password } = await request.json();
+export default function handler(req, res) {
+  if (req.method === 'POST') {
+    const { username, password } = req.body;
+    const filePath = path.join(process.cwd(), 'users.json');
+    const fileContents = fs.readFileSync(filePath, 'utf8');
+    const users = JSON.parse(fileContents);
 
-  const users = getUsers();
-  const user = users.find(user => user.username === username);
+    const user = users.find(user => user.username === username);
 
-  if (user && bcrypt.compareSync(password, user.password)) {
-    const token = Buffer.from(`${user.email}:${password}`).toString('base64');
+    if (user && bcrypt.compareSync(password, user.password)) {
+      const token = Buffer.from(`${user.email}:${password}`).toString('base64');
 
-    const cookie = serialize('token', token, {
-      httpOnly: true,
-      path: '/',
-      maxAge: 60 * 60 * 24 // 1 day
-    });
+      const cookie = serialize('token', token, {
+        httpOnly: true,
+        path: '/',
+        maxAge: 60 * 60 * 24 // 1 day
+      });
 
-    return NextResponse.json({ message: 'Login successful' }, { headers: { 'Set-Cookie': cookie } });
+      res.setHeader('Set-Cookie', cookie);
+      res.status(200).json({ message: 'Login successful' });
+    } else {
+      res.status(401).json({ message: 'Invalid credentials' });
+    }
   } else {
-    return NextResponse.json({ message: 'Invalid username or password' }, { status: 401 });
+    res.status(405).json({ message: 'Method Not Allowed' });
   }
 }

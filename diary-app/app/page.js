@@ -4,33 +4,37 @@ import { useEffect, useState } from 'react';
 import DiaryForm from './components/DiaryForm';
 import DiaryList from './components/DiaryList';
 import Sidebar from './components/Sidebar';
-import { useRouter } from 'next/navigation';
+import LoginPage from './components/LoginPage';
+import SignupPage from './components/SignupPage';
 import cookies from 'js-cookie';
 
 const Home = () => {
   const [entries, setEntries] = useState([]);
   const [editingEntry, setEditingEntry] = useState(null);
-  const router = useRouter();
+  const [user, setUser] = useState(null);
+  const [page, setPage] = useState('home'); // 'home', 'login', 'signup'
 
   useEffect(() => {
     const token = cookies.get('token');
-    if (!token) {
-      router.push('/login'); // Redirect to login page if not logged in
-    } else {
+    if (token) {
       fetch('/api/entries', {
         headers: {
           'Authorization': `Basic ${token}`,
           'Content-Type': 'application/json',
         },
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.message === 'Unauthorized') {
-          router.push('/login');
-        } else {
-          setEntries(data);
-        }
-      });
+        .then(response => response.json())
+        .then(data => {
+          if (data.message === 'Unauthorized') {
+            setPage('login');
+          } else {
+            setEntries(data);
+            setUser(true);
+            setPage('home');
+          }
+        });
+    } else {
+      setPage('login');
     }
   }, []);
 
@@ -70,6 +74,14 @@ const Home = () => {
       },
     }).then(() => setEntries(updatedEntries));
   };
+
+  if (page === 'login') {
+    return <LoginPage onLoginSuccess={() => setPage('home')} />;
+  }
+
+  if (page === 'signup') {
+    return <SignupPage onSignupSuccess={() => setPage('login')} />;
+  }
 
   return (
     <div className="container mt-4">
