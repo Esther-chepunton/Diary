@@ -1,15 +1,12 @@
-// app/layout.js
 "use client";
 
 import { useState } from "react";
-import { DiaryProvider } from "./context/DiaryContext";
 import AboutMyDay from "./components/AboutMyDay";
-import DiaryEntry from "./components/DiaryEntry";
+import DiaryListPage from "./components/DiaryListPage";
 import Profile from "./components/Profile";
 import Sidebar from "./components/Sidebar";
 import ToDoList from "./components/ToDoList";
-import DiaryForm from "./components/DiaryForm";
-import DiaryList from "./components/DiaryList";
+import { DiaryProvider } from "./context/DiaryContext";
 import "./globals.css";
 
 export default function RootLayout() {
@@ -30,8 +27,7 @@ export default function RootLayout() {
                 {activeSection === "about" && <AboutMyDay />}
                 {activeSection === "dataentry" && (
                   <>
-                    <DiaryForm />
-                    <DiaryList />
+                    <DiaryListPage />
                   </>
                 )}
               </div>

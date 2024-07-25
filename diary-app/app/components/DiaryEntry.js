@@ -1,5 +1,5 @@
-// app/components/DiaryEntry.js
 "use client";
+import PropTypes from "prop-types";
 
 const DiaryEntry = ({ entry, onEdit, onDelete }) => {
   if (!entry) return null;
@@ -8,18 +8,46 @@ const DiaryEntry = ({ entry, onEdit, onDelete }) => {
   const imageUrl = entry.image ? URL.createObjectURL(entry.image) : null;
 
   return (
-    <div className="card slide-in shadow p-3 mb-5 bg-body-tertiary rounded" style={{ backgroundColor: cardColor }}>
+    <div
+      className="card slide-in shadow p-3 mb-5 bg-body-tertiary rounded"
+      style={{ backgroundColor: cardColor }}
+    >
       <div className="card-body">
         <h5 className="card-title">{entry.date}</h5>
         <p className="card-text">{entry.content}</p>
-        {imageUrl && <img src={imageUrl} alt="Diary image" className="img-fluid mb-3" />}
-        <p className="card-text"><strong>Mood:</strong> {entry.mood}</p>
-        {entry.tags && <p className="card-text"><strong>Tags:</strong> {entry.tags.join(', ')}</p>}
-        <button className="btn btn-warning me-2" onClick={() => onEdit(entry.id)}>Edit</button>
-        <button className="btn btn-danger" onClick={() => onDelete(entry.id)}>Delete</button>
+        {imageUrl && (
+          <img src={imageUrl} alt="Diary image" className="img-fluid mb-3" />
+        )}
+        <p className="card-text">
+          <strong>Mood:</strong> {entry.mood}
+        </p>
+        {entry.tags && (
+          <p className="card-text">
+            <strong>Tags:</strong> {entry.tags.join(", ")}
+          </p>
+        )}
+        <button
+          className="btn btn-warning me-2"
+          style={{ backgroundColor: "#dfc5fe", border: "none", color: "black" }}
+          onClick={() => onEdit(entry)}
+        >
+          Edit
+        </button>
+        <button
+          className="btn btn-danger"
+          style={{ backgroundColor: "#dfc5fe", border: "none", color: "black" }}
+          onClick={() => onDelete(entry.id)}
+        >
+          Delete
+        </button>
       </div>
     </div>
   );
+};
+DiaryEntry.propTypes = {
+  entry: PropTypes.object.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 export default DiaryEntry;

@@ -1,5 +1,4 @@
-"use client"; 
-
+"use client";
 import { useEffect, useState } from "react";
 import DiaryForm from "./components/DiaryForm";
 import DiaryList from "./components/DiaryList";
@@ -17,46 +16,54 @@ const Home = () => {
       .catch((error) => console.error("Error fetching entries:", error));
   }, []);
 
-  const handleSaveEntry = (entry) => {
-    const updatedEntries = editingEntry
-      ? entries.map((e) => (e.id === entry.id ? entry : e))
-      : [...entries, entry];
+  const handleSaveEntry = async (entry) => {
+    const method = editingEntry ? "PUT" : "POST";
+    const url = "/api/entries";
 
-    fetch("/api/entries", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(entry),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (editingEntry) {
-          // Update the entry in the list
-          setEntries(entries.map((e) => (e.id === entry.id ? data : e)));
-        } else {
-          // Add the new entry to the list
-          setEntries([...entries, data]);
-        }
-        setEditingEntry(null); // Clear the editing state
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(entry),
       });
+      if (!response.ok) throw new Error("Failed to save entry");
+
+      if (editingEntry) {
+        setEntries((prevEntries) =>
+          prevEntries.map((e) => (e.id === entry.id ? entry : e))
+        );
+      } else {
+        setEntries((prevEntries) => [...prevEntries, entry]);
+      }
+      setEditingEntry(null);
+    } catch (error) {
+      console.error("Error saving entry:", error);
+    }
   };
 
-  const handleEditEntry = (id) => {
-    const entry = entries.find((e) => e.id === id);
+  const handleEditEntry = (entry) => {
     setEditingEntry(entry);
   };
 
-  const handleDeleteEntry = (id) => {
-    const updatedEntries = entries.filter((e) => e.id !== id);
+  const handleDeleteEntry = async (id) => {
+    try {
+      const response = await fetch("/api/entries", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+      if (!response.ok) throw new Error("Failed to delete entry");
 
-    fetch("/api/entries", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedEntries),
-    }).then(() => setEntries(updatedEntries));
+      setEntries((prevEntries) =>
+        prevEntries.filter((entry) => entry.id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting entry:", error);
+    }
   };
 
   return (
@@ -68,6 +75,7 @@ const Home = () => {
         <div className="col-md-9 d-flex flex-column align-items-center">
           <div className="sticky-form">
             <h1 className="mb-4">Diary App</h1>
+            <ToDoList />
             <DiaryForm entry={editingEntry} onSave={handleSaveEntry} />
           </div>
           <div className="entries-list mt-4 w-100">

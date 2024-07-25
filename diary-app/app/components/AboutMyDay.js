@@ -24,7 +24,12 @@ const AboutMyDay = () => {
 
       <div className="mb-3">
         <label htmlFor="mood">Mood:</label>
-        <select id="mood" value={mood} onChange={(e) => setMood(e.target.value)} className="form-control">
+        <select
+          id="mood"
+          value={mood}
+          onChange={(e) => setMood(e.target.value)}
+          className="form-control"
+        >
           <option value="happy">Happy</option>
           <option value="sad">Sad</option>
           <option value="angry">Angry</option>
@@ -44,7 +49,13 @@ const AboutMyDay = () => {
         />
       </div>
 
-      <button className="btn btn-primary" onClick={handleSave}>Save</button>
+      <button
+        className="btn btn-primary"
+        style={{ backgroundColor: "#e0b0ff", border: "none", color: "black" }}
+        onClick={handleSave}
+      >
+        Save
+      </button>
 
       <div className="mt-4">
         <h4>Mood Analysis</h4>
