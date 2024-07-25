@@ -1,6 +1,6 @@
-"use client";
+"use client"; 
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import DiaryForm from "./components/DiaryForm";
 import DiaryList from "./components/DiaryList";
 import Sidebar from "./components/Sidebar";
@@ -27,13 +27,19 @@ const Home = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(updatedEntries),
+      body: JSON.stringify(entry),
     })
-      .then(() => {
-        setEntries(updatedEntries);
-        setEditingEntry(null);
-      })
-      .catch((error) => console.error("Error saving entry:", error));
+      .then((response) => response.json())
+      .then((data) => {
+        if (editingEntry) {
+          // Update the entry in the list
+          setEntries(entries.map((e) => (e.id === entry.id ? data : e)));
+        } else {
+          // Add the new entry to the list
+          setEntries([...entries, data]);
+        }
+        setEditingEntry(null); // Clear the editing state
+      });
   };
 
   const handleEditEntry = (id) => {
@@ -62,7 +68,6 @@ const Home = () => {
         <div className="col-md-9 d-flex flex-column align-items-center">
           <div className="sticky-form">
             <h1 className="mb-4">Diary App</h1>
-            <ToDoList />
             <DiaryForm entry={editingEntry} onSave={handleSaveEntry} />
           </div>
           <div className="entries-list mt-4 w-100">

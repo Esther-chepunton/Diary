@@ -1,27 +1,50 @@
+// app/components/DiaryForm.js
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const DiaryForm = ({ entry, onSave }) => {
+const DiaryForm = ({ onSave }) => {
   const [date, setDate] = useState("");
   const [content, setContent] = useState("");
-  const [mood, setMood] = useState("happy");
+  const [mood, setMood] = useState("happy"); // Default mood
   const textareaRef = useRef(null);
 
   useEffect(() => {
     if (entry) {
       setDate(entry.date || "");
       setContent(entry.content || "");
-      setMood(entry.mood || "happy");
+      setMood(entry.mood || "happy"); // Default to "happy" if mood is not provided
     }
   }, [entry]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [content]);
+
+  const handleContentChange = (e) => {
+    setContent(e.target.value);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
+
+  const handleMoodChange = (e) => {
+    setMood(e.target.value);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (onSave) {
       onSave({ id: entry?.id || Date.now(), date, content, mood });
+      setDate("");
+      setContent("");
+      setMood("happy"); // Reset mood after saving
     } else {
-      console.error("onSave function is not defined");
+      console.error("onSave is not defined");
     }
     setDate("");
     setContent("");
@@ -29,28 +52,33 @@ const DiaryForm = ({ entry, onSave }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mb-3 shadow p-3 mb-5 bg-body-tertiary rounded"
-    >
-      <div className="form-group">
-        <label htmlFor="date">Date</label>
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label htmlFor="date">Date:</label>
         <input
           type="date"
-          className="form-control"
           id="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          required
+          className="form-control"
         />
       </div>
-      <div className="form-group mt-3">
-        <label htmlFor="mood">Mood</label>
-        <select
+      <div className="mb-3">
+        <label htmlFor="content">Content:</label>
+        <textarea
+          id="content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           className="form-control"
+          rows="3"
+        />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="mood">Mood:</label>
+        <select
           id="mood"
           value={mood}
-          onChange={(e) => setMood(e.target.value)}
+          onChange={handleMoodChange}
           required
         >
           <option value="happy">Happy</option>
@@ -68,7 +96,7 @@ const DiaryForm = ({ entry, onSave }) => {
           rows="3"
           ref={textareaRef}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={handleContentChange}
           required
         ></textarea>
       </div>
