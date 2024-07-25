@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import DiaryForm from "./components/DiaryForm";
 import DiaryList from "./components/DiaryList";
 import Sidebar from "./components/sidebar";
+import ToDoList from "./components/ToDoList";
 
 const Home = () => {
   const [entries, setEntries] = useState([]);
@@ -54,10 +55,12 @@ const Home = () => {
       <div className="row">
         <div className="col-md-3">
           <Sidebar />
+          
         </div>
         <div className="col-md-9 d-flex flex-column align-items-center">
           <div className="sticky-form">
             <h1 className="mb-4">Diary App</h1>
+            <ToDoList />
             <DiaryForm entry={editingEntry} onSave={handleSaveEntry} />
           </div>
           <div className="entries-list mt-4 w-100">

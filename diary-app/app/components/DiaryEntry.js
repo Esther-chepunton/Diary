@@ -3,7 +3,7 @@
 const DiaryEntry = ({ entry, onEdit, onDelete }) => {
   return (
     <div
-      className="shadow p-3 mb-5 bg-body-tertiary rounded"
+      className="card slide-in shadow p-3 mb-5 bg-body-tertiary rounded"
       style={{ backgroundColor: entry.color }}
     >
       <div className="card w-75 mb-3">
@@ -23,7 +23,11 @@ const DiaryEntry = ({ entry, onEdit, onDelete }) => {
           </button>
           <button
             className="btn btn-danger "
-            style={{ backgroundColor: "#dfc5fe", border: "none", color: "black" }}
+            style={{
+              backgroundColor: "#dfc5fe",
+              border: "none",
+              color: "black",
+            }}
             onClick={() => onDelete(entry.id)}
           >
             Delete

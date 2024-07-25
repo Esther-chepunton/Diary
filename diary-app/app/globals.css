@@ -178,3 +178,52 @@ body {
   resize: none;
   /* Prevent manual resizing */
 }
+
+/* adding animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.slide-in {
+  animation: slideIn 1s ease-in-out;
+}
+
+/* to do list */
+.card {
+  background-color: #f8f9fa;
+  /* Light background for visibility */
+  border-radius: 0.25rem;
+}
+
+.form-control {
+  border-radius: 0.25rem;
+}
+
+.btn {
+  border-radius: 0.25rem;
+}
+
+.list-group-item {
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+}
